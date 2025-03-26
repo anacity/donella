@@ -12,7 +12,7 @@ export default function StackLayout(){
             options={{title: "Inicio"}}/>
             
             <Stack.Screen 
-            name="produto/index"
+            name="details"
             options={{title: "Produto"}}/>
         </Stack>
     )
