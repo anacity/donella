@@ -6,14 +6,6 @@ export default function StackLayout(){
             screenOptions={{
                     headerShown: false
                 }}
-        >
-            <Stack.Screen 
-            name="index/index" 
-            options={{title: "Inicio"}}/>
-            
-            <Stack.Screen 
-            name="details"
-            options={{title: "Produto"}}/>
-        </Stack>
+        />
     )
 }
