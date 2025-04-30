@@ -8,47 +8,42 @@ import {
     SafeAreaView 
   } from "react-native";
   import { Ionicons } from '@expo/vector-icons';
+import { useLocalSearchParams } from "expo-router";
+import { useEffect, useState } from "react";
+import { ProductType } from "../home/page";
   
   export default function ProductDetails() {
-    type ProductType = {
-      name: string;
-      description: string;
-      price: number;
-      image: { uri: string }
-    };
-  
-    const product: ProductType = {
-      name: "Torta Especial de Maçã",
-      description: "Deliciosa torta de maçã feita com ingredientes selecionados. Massa crocante, recheio suave e sabor inigualável. Perfeita para acompanhar um café ou servir como sobremesa em ocasiões especiais.",
-      price: 12.85,
-      image: require('@/assets/images/tortademaca.jpg')
-    };
+    const { id } = useLocalSearchParams()
+    const[produto, setProduto] = useState<ProductType>()
+
+    function fetchProduct(){
+      fetch(`http://localhost:8080/produtos/${id}`)
+      .then((res) => res.json())
+      .then(data => setProduto(data))
+    }
+
+    useEffect(() => {
+      fetchProduct()
+    }, [])
   
     return (
       <SafeAreaView style={styles.safeArea}>
         <ScrollView contentContainerStyle={styles.container}>
-          
-          {/* <View style={styles.header}>
-            <TouchableOpacity style={styles.backButton}>
-              <Ionicons name="arrow-back" size={24} color="#333" />
-            </TouchableOpacity>
-          </View> */}
-  
           <View style={styles.imageContainer}>
             <Image 
-              source={product.image} 
+              source={produto?.imgUrl} 
               style={styles.productImage}
               resizeMode="cover"
             />
           </View>
   
           <View style={styles.infoContainer}>
-            <Text style={styles.productName}>{product.name}</Text>
-            <Text style={styles.productDescription}>{product.description}</Text>
+            <Text style={styles.productName}>{produto?.name}</Text>
+            <Text style={styles.productDescription}>{produto?.description}</Text>
           </View>
 
           <View style={styles.priceContainer}>
-              <Text style={styles.price}>R$ {product.price.toFixed(2)}</Text>
+              <Text style={styles.price}>R$ {produto?.price.toFixed(2)}</Text>
           </View>
   
           <View style={styles.footer}>

@@ -1,31 +1,30 @@
-import { Image, Text, TouchableOpacity, View, ScrollView } from 'react-native'
+import { Image, Text, TouchableOpacity, View, ScrollView, ImageSourcePropType } from 'react-native'
 import { styles } from './style'  
 import { Link } from 'expo-router'
+import { useEffect, useState } from 'react'
+
+
+export type ProductType = {
+    id: number,
+    name: string,
+    price: number,
+    description: string,
+    ingredientes: string,
+    imgUrl: ImageSourcePropType
+}
 
 export default function Index(){
-    const MENU = [
-        {
-            id: 1,
-            name: "Bolo de formigueiro",
-            description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit...",
-            price: 26.90,
-            image: require("@/assets/images/bolo-formigueiro-brigadeiro.jpg")
-        },
-        {
-            id: 2,
-            name: "Pão de canela",
-            description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit...",
-            price: 14.50,
-            image: require("@/assets/images/paodecanela.jpg")
-        },
-        {
-            id: 3,
-            name: "Torta Especial de Maçã",
-            description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit...",
-            price: 12.85,
-            image: require("@/assets/images/tortademaca.jpg")          
-        }
-    ]
+    const [produtos, setProdutos] = useState<ProductType[]>()
+
+    function fetchProducts(){
+        fetch("http://localhost:8080/produtos/")
+        .then((res) => res.json())
+        .then(data => setProdutos(data))
+    }
+
+    useEffect(() => {
+        fetchProducts()
+    }, [])
 
 
 
@@ -39,7 +38,7 @@ export default function Index(){
         
         <View style={styles.tabs}>
             {["Preferidos", "Pães Artesanais", "Doces", "Confeitaria Gourmet"].map((tab) => (
-                <TouchableOpacity>
+                <TouchableOpacity key={tab}>
                     <Text style={styles.tabText}>{tab}</Text>
                 </TouchableOpacity>
             ))}
@@ -47,15 +46,15 @@ export default function Index(){
 
         <ScrollView style={styles.menuList}>
         {
-            MENU.map((item) => (
-                <Link href={"/produto/1"} asChild>
+            produtos?.map((item) => (
+                <Link href={`/produto/${item.id}`} asChild key={item.id}>
                 <TouchableOpacity style={styles.menuItem}>
                     <View style={styles.menuContent}>
                         <Text style={styles.itemName}>{item.name}</Text>
                         <Text>{item.description}</Text>
-                        <Text style={styles.itemPrice}>{item.price}</Text>
+                        <Text style={styles.itemPrice}>{item.price.toFixed(2)}</Text>
                     </View>
-                    <Image source={item.image} style={styles.itemImage}/>
+                    <Image source={item.imgUrl} style={styles.itemImage}/>
                 </TouchableOpacity>
                 </Link>
             ))
